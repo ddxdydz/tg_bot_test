@@ -1,10 +1,7 @@
-import requests
-import smtplib
 import json
-from pprint import pprint
 
 from telegram.ext import Updater, MessageHandler, Filters
-from telegram.ext import CallbackContext, CommandHandler, ConversationHandler
+from telegram.ext import CommandHandler
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 
 
