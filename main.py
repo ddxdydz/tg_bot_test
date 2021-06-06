@@ -1,8 +1,9 @@
 import json
+import telegram
 
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Updater, MessageHandler, Filters
 from telegram.ext import CommandHandler
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 
 
 TOKEN = '1864577364:AAGVCPJbh00532SkfZ4fUhbfv4luCWnwt0g'
