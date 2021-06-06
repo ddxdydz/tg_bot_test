@@ -1,5 +1,4 @@
 import json
-import telegram
 
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Updater, MessageHandler, Filters
