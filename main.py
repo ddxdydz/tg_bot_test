@@ -27,10 +27,11 @@ def admin_func(func):
 
 def add_history_func(func):
     def saved_func(update, context):
-        if update.message.from_user['id'] == ADMIN_ID:
+        if update.message.from_user['id'] != ADMIN_ID:
             with open('history.txt', 'a', encoding='utf8') as file:
-                file.write(f"\nTIME: {update.message.date}" +
-                           f"\nFROM: {update.message.from_user}" +
+                from_user = update.message.from_user
+                file.write(f"\nTIME: {update.message.date}  -  {from_user['username']}" +
+                           f"\nFROM: {from_user}" +
                            f"\nTEXT: {update.message.text}" +
                            f"\n---")
         func(update, context)
