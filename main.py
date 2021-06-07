@@ -21,11 +21,12 @@ def admin_func(func):
 
 def add_history_func(func):
     def saved_func(update, context):
-        if update.message.from_user['id'] != ADMIN_ID:
+        if update.message.from_user['id'] == ADMIN_ID:
             with open('history.txt', 'a', encoding='utf8') as file:
-                file.write(f"\n\nTIME: {update.message.date}" +
+                file.write(f"\nTIME: {update.message.date}" +
                            f"\nFROM: {update.message.from_user}" +
-                           f"\nTEXT: {update.message.text}")
+                           f"\nTEXT: {update.message.text}" +
+                           f"\n---")
         func(update, context)
     return saved_func
 
@@ -102,7 +103,7 @@ def add_codes(update, context):
         if not name.isdigit() and all(map(lambda elem: elem.isdigit(), nums.split(', '))):
             code = {name: nums.split(', ')}
             with open('added_codes.txt', 'a', encoding='utf8') as file:
-                file.write(f'\n{name.lower()} {", ".join(code[name])}')
+                file.write(f'\n{name.lower()} {", ".join(code[name])}' + '\n---')
             update.message.reply_text('Принято в обработку')
         else:
             update.message.reply_text('Ошибка в введённых данных')
@@ -135,7 +136,7 @@ def close_mod(update, context):
 @admin_func
 def clear_history(update, context):
     with open('history.txt', 'w', encoding='utf8') as file:
-        file.write('history messages:')
+        file.write('---')
     update.message.reply_text(
         f'OK!'
     )
@@ -144,15 +145,21 @@ def clear_history(update, context):
 @admin_func
 def show_history(update, context):
     with open('history.txt', 'rt', encoding='utf8') as file:
-        update.message.reply_text(
-            file.read()
-        )
+        data = file.read()
+        if data == '---':
+            update.message.reply_text("Empty")
+        else:
+            for elem in data.split('---'):
+                if elem:
+                    update.message.reply_text(
+                        elem
+                    )
 
 
 @admin_func
 def clear_added_codes(update, context):
     with open('added_codes.txt', 'w', encoding='utf8') as file:
-        file.write('added codes:')
+        file.write('---')
     update.message.reply_text(
         f'OK!'
     )
@@ -161,9 +168,15 @@ def clear_added_codes(update, context):
 @admin_func
 def show_added_codes(update, context):
     with open('added_codes.txt', 'rt', encoding='utf8') as file:
-        update.message.reply_text(
-            file.read()
-        )
+        data = file.read()
+        if data == '---':
+            update.message.reply_text("Empty")
+        else:
+            for elem in data.split('---'):
+                if elem:
+                    update.message.reply_text(
+                        elem
+                    )
 
 
 def main():
@@ -197,4 +210,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    main()  # heroku ps:scale worker=1
