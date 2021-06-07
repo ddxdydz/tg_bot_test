@@ -1,13 +1,19 @@
 import json
 
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Updater, MessageHandler, Filters
-from telegram.ext import CommandHandler
+from telegram.ext import CommandHandler, CallbackQueryHandler
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, \
+    InlineKeyboardButton, InlineKeyboardMarkup
 
 
 TOKEN = '1864577364:AAGVCPJbh00532SkfZ4fUhbfv4luCWnwt0g'
 MODER_MAIL = 'zil10@inbox.ru'
 ADMIN_ID = 1040804311
+
+# Inline keyboards
+inline_btn_1 = InlineKeyboardButton('OK!', callback_data='button1')
+inline_btn_2 = InlineKeyboardButton('CLEAR ALL!', callback_data='button2')
+inline_kb_full = InlineKeyboardMarkup([[inline_btn_1, inline_btn_2]], row_width=2)
 
 
 def admin_func(func):
@@ -55,7 +61,11 @@ def echo(update, context):
             [elem.capitalize() for elem in found_items[i:i + list_size]]
             for i in range(0, len(found_items), list_size)
         ]
-        markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
+        markup = ReplyKeyboardMarkup(
+            reply_keyboard,
+            one_time_keyboard=True,
+            resize_keyboard=False
+        )
         update.message.reply_text(
             "Выберите подходящий элемент:",
             reply_markup=markup
@@ -77,12 +87,10 @@ def start(update, context):
 @add_history_func
 def bot_help(update, context):
     update.message.reply_text(
-        """
-        Доступные команды: 
-        /help 
-        /show_db 
-        /add_codes <name> <code1>, <code2>...
-        """
+        "Доступные команды:\n" +
+        "/help\n" +
+        "/show_db\n" +
+        "/add_codes <name> <code1>, <code2>..."
     )
 
 
@@ -93,6 +101,10 @@ def show_db(update, context):
         data = json.loads(codes_file)
     for name, codes in data.items():
         update.message.reply_text(f'{name.capitalize()}: {", ".join(codes)}')
+
+
+def clear_chat_messages(update, context):
+    print(help(update))
 
 
 @add_history_func
@@ -179,10 +191,25 @@ def show_added_codes(update, context):
                     )
 
 
+def ok_mess_func(update, context):
+    query = update.callback_query
+    query.answer()
+    query.edit_message_text(
+        text=query.message['text'],
+        reply_markup=InlineKeyboardMarkup([[]])
+    )
+
+
+def delete_mess_func(update, context):
+    query = update.callback_query
+    query.answer()
+    query.delete_message()
+
+
 def main():
     updater = Updater(TOKEN, use_context=True)
 
-    dp = updater.dispatcher  # Пдиспетчер сообщений.
+    dp = updater.dispatcher  # Диспетчер сообщений.
 
     # Создаём обработчик сообщений типа Filters.text из описанной выше функции echo()
     # вызывается при получении сообщения с типом "текст"
@@ -192,6 +219,7 @@ def main():
     dp.add_handler(CommandHandler("help", bot_help))
     dp.add_handler(CommandHandler("add_codes", add_codes))
     dp.add_handler(CommandHandler("show_db", show_db))
+    # dp.add_handler(CommandHandler("clear", clear_chat_messages))
 
     dp.add_handler(CommandHandler("mod", mod_help))
     dp.add_handler(CommandHandler("close_mod", close_mod))
@@ -200,14 +228,17 @@ def main():
     dp.add_handler(CommandHandler("clear_added_codes", clear_added_codes))
     dp.add_handler(CommandHandler("show_added_codes", show_added_codes))
 
+    # TODO TEST INLINE BUTTONS
+    dp.add_handler(CallbackQueryHandler(ok_mess_func, pattern='button1'))
+    dp.add_handler(CallbackQueryHandler(delete_mess_func, pattern='button2'))
+
     # Регистрируем обработчик в диспетчере.
     dp.add_handler(text_handler)
 
     updater.start_polling()  # Запускаем цикл приема и обработки сообщений.
-
     updater.idle()  # Ждём завершения приложения.
-    # (например, получения сигнала SIG_TERM при нажатии клавиш Ctrl+C)
 
 
+# heroku ps:scale worker=1
 if __name__ == '__main__':
-    main()  # heroku ps:scale worker=1
+    main()

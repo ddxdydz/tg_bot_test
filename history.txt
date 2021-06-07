@@ -39,3 +39,63 @@ TIME: 2021-06-07 07:24:26+00:00
 FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
 TEXT: sam
 ---
+TIME: 2021-06-07 07:26:04+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: /help
+---
+TIME: 2021-06-07 07:26:51+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: /help
+---
+TIME: 2021-06-07 07:41:21+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: weer
+---
+TIME: 2021-06-07 07:55:42+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: /help
+---
+TIME: 2021-06-07 08:06:12+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: fsdfd
+---
+TIME: 2021-06-07 08:21:38+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: gdags
+---
+TIME: 2021-06-07 08:27:09+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: gsags
+---
+TIME: 2021-06-07 08:27:25+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: fwe
+---
+TIME: 2021-06-07 08:32:52+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: /help
+---
+TIME: 2021-06-07 08:33:01+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: /clear
+---
+TIME: 2021-06-07 08:33:12+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: fsdfds
+---
+TIME: 2021-06-07 08:33:16+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: sam
+---
+TIME: 2021-06-07 08:33:18+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: s
+---
+TIME: 2021-06-07 08:33:22+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: fsag
+---
+TIME: 2021-06-07 08:33:35+00:00
+FROM: {'id': 1040804311, 'first_name': 'PressureSound', 'is_bot': False, 'username': 'Gtghugtdrd5ubygf', 'language_code': 'ru'}
+TEXT: fsf
+---
