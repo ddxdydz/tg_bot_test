@@ -64,7 +64,7 @@ def echo(update, context):
         keyboard_size = 7
         reply_keyboard = \
             [
-                [InlineKeyboardButton(f'{name.upper()}', callback_data='none')]
+                [InlineKeyboardButton(f'{name.upper()}', callback_data='show_elem_name')]
             ] + \
             [
                 [InlineKeyboardButton(elem, callback_data=elem)
@@ -273,6 +273,17 @@ def btn_code_add(update, context):
     )
 
 
+def show_elem_name(update, context):
+    query = update.callback_query
+    btn_elem_name = update.callback_query.message[
+        'reply_markup']['inline_keyboard'][0][0]['text']
+    context.bot.answer_callback_query(
+        callback_query_id=query.id,
+        text=btn_elem_name,
+        show_alert=False
+    )
+
+
 def main():
     updater = Updater(TOKEN, use_context=True)
 
@@ -301,6 +312,7 @@ def main():
     dp.add_handler(CallbackQueryHandler(ok_mess_func, pattern='button1'))
     dp.add_handler(CallbackQueryHandler(delete_mess_func, pattern='button2'))
 
+    dp.add_handler(CallbackQueryHandler(show_elem_name, pattern='show_elem_name'))
     dp.add_handler(CallbackQueryHandler(btn_code_add))
 
     # Регистрируем обработчик в диспетчере.
