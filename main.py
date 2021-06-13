@@ -275,13 +275,50 @@ def btn_code_add(update, context):
 
 def show_elem_name(update, context):
     query = update.callback_query
-    btn_elem_name = update.callback_query.message[
-        'reply_markup']['inline_keyboard'][0][0]['text']
+    name = update.callback_query.message[
+        'reply_markup']['inline_keyboard'][0][0]['text'].lower()
+
+    with open('codes.json', 'r', encoding='utf8') as file:
+        codes_file = file.read()
+        data = json.loads(codes_file)
+
+    code_values = sorted(
+        data[name].items(),
+        key=lambda elem: elem[1],
+        reverse=True
+    )
+    name_codes = \
+        list(map(lambda elem: elem[0], code_values))
+
+    keyboard_size = 7
+    reply_keyboard = \
+        [
+            [InlineKeyboardButton(f'{name.upper()}', callback_data='show_elem_name')]
+        ] + \
+        [
+            [InlineKeyboardButton(elem, callback_data=elem)
+             for elem in name_codes[i:i + keyboard_size]]
+            for i in range(0, len(name_codes), keyboard_size)
+        ]
+
+    inline_kb_full = InlineKeyboardMarkup(reply_keyboard)
+    text = 'Без изменений'
+    try:
+
+        query.edit_message_text(
+            text=query.message['text'],
+            reply_markup=inline_kb_full
+        )
+        text = 'Изменено'
+    except Exception:
+        pass
+
     context.bot.answer_callback_query(
         callback_query_id=query.id,
-        text=btn_elem_name,
+        text=f'{name.upper()} ({text})',
         show_alert=False
     )
+    query.answer()
 
 
 def main():
