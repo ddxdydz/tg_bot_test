@@ -13,7 +13,7 @@ ADMIN_ID = 1040804311
 # Inline keyboards
 inline_btn_1 = InlineKeyboardButton('OK!', callback_data='button1')
 inline_btn_2 = InlineKeyboardButton('CLEAR ALL!', callback_data='button2')
-inline_kb_full = InlineKeyboardMarkup([[inline_btn_1, inline_btn_2]], row_width=2)
+inline_kb_full_ex = InlineKeyboardMarkup([[inline_btn_1, inline_btn_2]])
 
 
 def admin_func(func):
@@ -41,20 +41,42 @@ def add_history_func(func):
 # Определяем функцию-обработчик сообщений.
 @add_history_func
 def echo(update, context):
-    input_data = update.message.text
+    input_data = update.message.text.lower()
 
     with open('codes.json', 'r', encoding='utf8') as file:
         codes_file = file.read()
         data = json.loads(codes_file)
 
     found_items = list(filter(
-        lambda elem: input_data.lower() in elem, data.keys()))
+        lambda el_name: input_data in el_name, data.keys()))
 
     if len(found_items) == 1:
         name = found_items[0]
+
+        code_values = sorted(
+            data[name].items(),
+            key=lambda elem: elem[1],
+            reverse=True
+        )
+        name_codes = \
+            list(map(lambda elem: elem[0], code_values))
+
+        keyboard_size = 7
+        reply_keyboard = \
+            [
+                [InlineKeyboardButton(f'{name.upper()}', callback_data='none')]
+            ] + \
+            [
+                [InlineKeyboardButton(elem, callback_data=elem)
+                 for elem in name_codes[i:i + keyboard_size]]
+                for i in range(0, len(name_codes), keyboard_size)
+            ]
+
+        inline_kb_full = InlineKeyboardMarkup(reply_keyboard)
+
         update.message.reply_text(
-            f'{name.capitalize()}: {", ".join(data[name])}',
-            reply_markup=ReplyKeyboardRemove()
+            f' Search result:',
+            reply_markup=inline_kb_full
         )
     elif len(found_items):
         list_size = len(found_items) // 2 % 4
@@ -74,7 +96,6 @@ def echo(update, context):
     else:
         update.message.reply_text(
             'Not found',
-            reply_markup=ReplyKeyboardRemove()
         )
 
 
@@ -82,7 +103,8 @@ def echo(update, context):
 @add_history_func
 def start(update, context):
     update.message.reply_text(
-        "Привет! Я бот. Напишите мне тип устройства, и я пришлю код для универсального пульта!")
+        "Привет! Я бот. Напишите мне тип устройства, и я пришлю код для универсального пульта!"
+    )
 
 
 @add_history_func
@@ -129,7 +151,8 @@ def mod_help(update, context):
     reply_keyboard = [
         ["/close_mod"],
         ["/show_history", "/clear_history"],
-        ["/show_added_codes", "/clear_added_codes"]
+        ["/show_added_codes", "/clear_added_codes"],
+        ['/get_code_file', "/restart_code_file"]
     ]
     markup = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=False)
     update.message.reply_text(
@@ -192,6 +215,26 @@ def show_added_codes(update, context):
                     )
 
 
+@admin_func
+def get_code_file(update, context):
+    context.bot.send_document(
+        update.message.chat_id,
+        open('codes.json', 'rb')
+    )
+
+
+@admin_func
+def restart_code_file(update, context):
+    with open('codes.json', 'r', encoding='utf-8') as f:
+        r_file = f.read()
+        data = json.loads(r_file)
+    for btn_elem_name in data.keys():
+        for btn_code_name in data[btn_elem_name]:
+            data[btn_elem_name][btn_code_name] = 0
+    with open('codes.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, sort_keys=True, indent=4)
+
+
 def ok_mess_func(update, context):
     query = update.callback_query
     query.answer()
@@ -205,6 +248,26 @@ def delete_mess_func(update, context):
     query = update.callback_query
     query.answer()
     query.delete_message()
+
+
+def btn_code_add(update, context):
+    query = update.callback_query
+    btn_elem_name = update.callback_query.message[
+        'reply_markup']['inline_keyboard'][0][0]['text'].lower()
+    btn_code_name = query.data
+
+    with open('codes.json', 'r', encoding='utf-8') as f:
+        r_file = f.read()
+        data = json.loads(r_file)
+    data[btn_elem_name][btn_code_name] += 1
+    with open('codes.json', 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, sort_keys=True, indent=4)
+
+    context.bot.answer_callback_query(
+        callback_query_id=query.id,
+        text='КОД ОТМЕЧЕН',
+        show_alert=False
+    )
 
 
 def main():
@@ -228,10 +291,14 @@ def main():
     dp.add_handler(CommandHandler("show_history", show_history))
     dp.add_handler(CommandHandler("clear_added_codes", clear_added_codes))
     dp.add_handler(CommandHandler("show_added_codes", show_added_codes))
+    dp.add_handler(CommandHandler("get_code_file", get_code_file))
+    dp.add_handler(CommandHandler("restart_code_file", restart_code_file))
 
     # TODO TEST INLINE BUTTONS
     dp.add_handler(CallbackQueryHandler(ok_mess_func, pattern='button1'))
     dp.add_handler(CallbackQueryHandler(delete_mess_func, pattern='button2'))
+
+    dp.add_handler(CallbackQueryHandler(btn_code_add))
 
     # Регистрируем обработчик в диспетчере.
     dp.add_handler(text_handler)
